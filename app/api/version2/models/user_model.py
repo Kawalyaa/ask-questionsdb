@@ -4,7 +4,7 @@ from app.api.version2.models.basemodel import BaseModel
 
 class UserModel(BaseModel):
     """class for user models inheriting from BaseModel"""
-    def __init__(self, name, email, password, user_name):
+    def __init__(self, name='name', email='email', password='password', user_name='user_name'):
         self.name = name
         self.email = email
         self.password = password

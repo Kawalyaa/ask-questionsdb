@@ -1,13 +1,15 @@
 from app.db_config import init_db
 from app.api.version2.models.basemodel import BaseModel
+from datetime import datetime
 
 
 class PostModel(BaseModel):
     """class for post models inheriting from BaseModel"""
-    def __init__(self, title, description, created_by):
+    def __init__(self, title='title', description='description', created_by='created_by'):
         self.title = title
         self.description = description
         self.created_by = created_by
+        self.created_on = datetime.now()
 
     def save(self):
         """This method saves the post infomation"""
@@ -24,8 +26,8 @@ class PostModel(BaseModel):
         """Execute psql statements we shall be using it always to execute statements"""
         if BaseModel().check_exist('posts', 'title', self.title) is True:
             return "Post already exists"
-        query = """INSERT INTO posts (title, description, created_by) VALUES \
-        (%(title)s, %(description)s, %(created_by)s) RETURNING user_id"""
+        query = """INSERT INTO posts (title, description, created_by, created_on) VALUES \
+         (%(title)s, %(description)s, %(created_by)s, ('now')) RETURNING post_id;"""
 
         cur.execute(query, posts)
         # Do what the query  says and substitute the values for posts into the table
@@ -34,27 +36,27 @@ class PostModel(BaseModel):
         con.commit()
         # save changes to the DATABASE_URL
         con.close()
-        return post_id
+        return int(post_id)
 
     def get_posts(self):
         con = init_db()
         cur = con.cursor()
-        query = "SELECT title, description, created_by, post_id, created_on FROM posts;"
+        query = "SELECT * FROM posts;"
         cur.execute(query)
         data = cur.fetchall()
         res = []
 
         for i, items in enumerate(data):
-            title, description, created_by, post_id, created_on = items
+            post_id, title, description, created_by, created_on = items
             posts = dict(
-                post_id=int(post_id),
+                post_id=post_id,
                 title=title,
                 description=description,
                 created_by=int(created_by),
                 created_on=str(created_on)
             )
             res.append(posts)
-            return res
+        return res
 
     def get_one_post(self, post_id):
         con = init_db()

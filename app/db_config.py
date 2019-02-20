@@ -7,7 +7,7 @@ import os
 # dbname = 'questions'
 # conn_url="dbname='questions' host='localhost' port=5432  user='kawalya' password='kawalyaa'"
 
-uri = os.getenv(['DATABASE_URL'])
+uri = os.getenv('DATABASE_URL')
 
 test_uri = os.getenv('DATABASE_TEST_URL')
 
@@ -60,18 +60,18 @@ def tables():
     """ Contains all tables creation queries"""
     users = """ CREATE TABLE IF NOT EXISTS users (
     user_id serial PRIMARY KEY NOT NULL,
-    name varchar (20) NOT NULL,
-    user_name varchar (20) NOT NULL,
-    email varchar (20) NOT NULL,
+    name character varying (50) NOT NULL,
+    user_name character varying (50) NOT NULL,
+    email character varying (50) NOT NULL,
     date_created timestamp with time zone DEFAULT ('now'::text)::date NOT NULL,
-    password varchar (15) NOT NULL
+    password character varying (15) NOT NULL
     );"""
 
-    posts = """ CREATE TABLES IF NOT EXISTS posts (
+    posts = """ CREATE TABLE IF NOT EXISTS posts (
     post_id serial PRIMARY KEY NOT NULL,
-    created_by varchar (20) NOT NULL,
-    description varchar (200) NOT NULL,
     title varchar (50) NOT NULL,
+    description varchar (200) NOT NULL,
+    created_by varchar (100) NOT NULL,
     created_on timestamp with time zone DEFAULT ('now'::text)::date NOT NULL
     );"""
 
