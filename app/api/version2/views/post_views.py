@@ -45,15 +45,17 @@ class SingleQuestionBlog(Resource):
 
     def put(self, post_id):
         data = request.get_json()
-        for key, value in data.items():
-            res = PostModel().update_question("posts", key, value, "post_id", post_id)
-            if res == "Updated":
-                return make_response(jsonify({
-                    "message": "question with id {} is updated".format(post_id)
-                }), 200)
+        # for key, value, in data.items():
+        title = data['title']
+        description = data['description']
+        res = PostModel().update_question(title, description, post_id)
+        if res == "Updated":
             return make_response(jsonify({
-                "message": "Not found"
-            }), 404)
+                "message": "question with id {} is updated".format(post_id)
+            }), 200)
+        return make_response(jsonify({
+            "message": "Not found!!"
+        }), 404)
 
     def delete(self, post_id):
         deleted = PostModel()

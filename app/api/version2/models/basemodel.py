@@ -2,7 +2,7 @@ from app.db_config import init_db
 
 
 class BaseModel(object):
-    """class to check if item exist"""
+    """class to stracture the user questions"""
     def check_exist(self, table_name, field_name, value):
         con = init_db()
         cur = con.cursor()
@@ -25,13 +25,14 @@ class BaseModel(object):
         con.close()
         return "Deleted"
 
-    def update_question(self, table_name, field_name, data, item_p, item_id):
-        if self.check_exist(table_name, item_p, item_id) is False:
+    def update_question(self, title, description, post_id):
+        if self.check_exist('posts', 'post_id', post_id) is False:
             return "Not found"
         con = init_db()
         cur = con.cursor()
-        query = "UPDATE {} SET {}='{}'\
-        WHERE {}={};".format(table_name, field_name, data, item_p, item_id)
-        cur.execute(query)
+        query = "UPDATE posts SET title = (%s), description = (%s)\
+        WHERE post_id = (%s) ;"
+        # .format(table_name, field_name, data, item_p, item_id)
+        cur.execute(query, (title, description, post_id))
         con.commit()
         return "Updated"
