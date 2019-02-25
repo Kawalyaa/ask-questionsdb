@@ -47,8 +47,9 @@ def destroy():
 
     posts = """DROP TABLE IF EXISTS posts CASCADE;"""
     users = """DROP TABLE IF EXISTS users CASCADE;"""
+    blacklist = """DROP TABLE IF EXISTS blacklist CASCADE;"""
 
-    queries = [posts, users]
+    queries = [posts, users, blacklist]
 
     for query in queries:
         cur.execute(query)
@@ -75,5 +76,9 @@ def tables():
     created_on timestamp with time zone DEFAULT ('now'::text)::date NOT NULL
     );"""
 
-    queries = [users, posts]
+    blacklist = """CREATE TABLE IF NOT EXISTS blacklist (
+    tokens character varying(200) NOT NULL
+    ); """
+
+    queries = [users, posts, blacklist]
     return queries
