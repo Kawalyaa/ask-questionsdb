@@ -38,6 +38,7 @@ class UserModel(BaseModel):
         return user_id
 
     def logout(self, token):
+        """This method keeps used tokens in the blacklist table"""
         con = init_db()
         cur = con.cursor()
         query = "INSERT INTO blacklist (tokens) VALUES ('{}');".format(token)

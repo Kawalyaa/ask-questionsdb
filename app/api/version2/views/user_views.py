@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask import request, make_response, jsonify
 from app.api.version2.models.user_model import UserModel
-from werkzeug.security import generate_password_hash, check_password_hash
+# from werkzeug.security import generate_password_hash
 from werkzeug.exceptions import BadRequest
 import string
 import re
@@ -14,12 +14,17 @@ def validate_user(user):
         if not value:
             raise BadRequest("{} is lacking. It is required field".format(key))
         # validate length
-        if key == "user_name" or key == "password":
+        if key == "user_name":
             if len(value) < 4:
                 raise BadRequest("The {} provided is too short".format(key))
-            elif len(value) > 16:
+            elif len(value) > 8:
                 raise BadRequest("The {} provided is too long".format(key))
-        if key == "name" or key == "user_name":
+        if key == "password":
+            if len(value) < 4:
+                raise BadRequest("The {} provided is too short".format(key))
+            elif len(value) > 18:
+                raise BadRequest("The {} provided is too long".format(key))
+        if key == "name":
             # make sure the value provided is a Registering
             for i in value:
 
@@ -87,9 +92,10 @@ class Registration(Resource):
             password = req['password'].strip()
             user_name = req['user_name'].strip()
             if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
-                return make_response(jsonify({"Message": "The email provided is invalid"}))
+                return make_response(jsonify({"Message": "The email provided is invalid"}), 400)
         except (KeyError, IndexError) as e:
-            return e
+            resp = e
+            return resp
         new = {
             "name": name,
             "email": email,
