@@ -1,11 +1,5 @@
 import psycopg2
 import os
-# host = 'localhost'
-# user = 'kawalya'
-# port = 5432
-# password = 'kawalyaa'
-# dbname = 'questions'
-# conn_url="dbname='questions' host='localhost' port=5432  user='kawalya' password='kawalyaa'"
 
 uri = os.getenv('DATABASE_URL')
 
@@ -29,7 +23,7 @@ def init_db():
     return con
 
 
-def init_test_db(test_url):
+def init_tdb(test_url):
     """returns connection and create tables for testing"""
     con = connection(test_uri)
     cur = con.cursor()
@@ -40,7 +34,7 @@ def init_test_db(test_url):
     return con
 
 
-def destroy():
+def destroydb():
     """Deletes all tables after tests have been run"""
     con = connection(test_uri)
     cur = con.cursor()

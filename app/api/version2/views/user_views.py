@@ -17,7 +17,7 @@ def validate_user(user):
         if key == "user_name":
             if len(value) < 4:
                 raise BadRequest("The {} provided is too short".format(key))
-            elif len(value) > 8:
+            elif len(value) > 15:
                 raise BadRequest("The {} provided is too long".format(key))
         if key == "password":
             if len(value) < 4:
@@ -36,10 +36,16 @@ class Auth(Resource):
     """class to handle user login"""
     def post(self):
         req = request.get_json()
+        if not req:
+            return jsonify({"message": "Content should be json"})
+        user_name = req['user_name']
+        password = req['password']
+
         login = {
-            "user_name": req['user_name'],
-            "password": req['password']
+            "user_name": user_name,
+            "password": password
         }
+        validate_user(login)
         if UserModel().check_exist('users', 'user_name', login['user_name']) is False:
             return make_response(jsonify({
                 "message": "No user found"
@@ -86,16 +92,18 @@ class Registration(Resource):
 
     def post(self):
         req = request.get_json()
+
+        if not req:
+            return jsonify({"mesage": "Content should be json"})
         try:
             name = req['name'].strip()
             email = req['email'].strip()
             password = req['password'].strip()
             user_name = req['user_name'].strip()
-            if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
-                return make_response(jsonify({"Message": "The email provided is invalid"}), 400)
-        except (KeyError, IndexError) as e:
-            resp = e
-            return resp
+        except ValueError:
+            return jsonify({"message": "Incorect input"})
+        if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
+            return make_response(jsonify({"Message": "The email provided is invalid"}), 400)
         new = {
             "name": name,
             "email": email,
@@ -105,12 +113,12 @@ class Registration(Resource):
         validate_user(new)
         requester = UserModel(**new)
         res = requester.save()
-        if res == "User already existsI!":
+        if isinstance(res, str):
             return make_response(jsonify({
                 "message": "User exists"}), 409)
 
         token = UserModel().ecnode_token(res)
         return make_response(jsonify({
             "message": "created successfully",
-            "access_token": token
+            "access_token": str(token)
         }), 201)
