@@ -31,7 +31,7 @@ class QuestionBlogs(Resource):
             else:
                 return make_response(jsonify({"message": "Post already exists"}), 409)
         return make_response(jsonify({
-            "message": response
+            "message": str(response)
         }), 401)
 
     def get(self):
@@ -52,7 +52,7 @@ class QuestionBlogs(Resource):
                     "post": res
                 }), 200)
         return make_response(jsonify({
-            "message": response
+            "message": str(response)
         }), 401)
 
 
@@ -77,7 +77,7 @@ class SingleQuestionBlog(Resource):
                     "post": res
                 }), 200)
         return make_response(jsonify({
-            "message": response
+            "message": str(response)
         }), 401)
 
     def put(self, post_id):
@@ -103,7 +103,7 @@ class SingleQuestionBlog(Resource):
                     "message": "Not found!!"
                 }), 404)
         return make_response(jsonify({
-            "message": response
+            "message": str(response)
         }), 401)
 
     def delete(self, post_id):
@@ -123,5 +123,5 @@ class SingleQuestionBlog(Resource):
             else:
                 return make_response(jsonify({"message": "Not found"}), 404)
         return make_response(jsonify({
-            "message": response
+            "message": str(response)
         }), 401)

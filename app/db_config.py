@@ -3,48 +3,18 @@ import os
 
 uri = os.getenv('DATABASE_URL')
 
-test_uri = os.getenv('DATABASE_TEST_URL')
 
-
-def connection(url):
+def connection():
     """This method returns connection"""
-    con = psycopg2.connect(url)
+    con = psycopg2.connect("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
     return con
 
 
 def init_db():
     """ This method returns connection and creates tables"""
-    con = connection(uri)
+    con = connection()
     cur = con.cursor()
     queries = tables()
-    for query in queries:
-        cur.execute(query)
-    con.commit()
-    return con
-
-
-def init_tdb(test_url):
-    """returns connection and create tables for testing"""
-    con = connection(test_uri)
-    cur = con.cursor()
-    queries = tables()
-    for query in queries:
-        cur.execute(query)
-    con.commit()
-    return con
-
-
-def destroydb():
-    """Deletes all tables after tests have been run"""
-    con = connection(test_uri)
-    cur = con.cursor()
-
-    posts = """DROP TABLE IF EXISTS posts CASCADE;"""
-    users = """DROP TABLE IF EXISTS users CASCADE;"""
-    blacklist = """DROP TABLE IF EXISTS blacklist CASCADE;"""
-
-    queries = [posts, users, blacklist]
-
     for query in queries:
         cur.execute(query)
     con.commit()

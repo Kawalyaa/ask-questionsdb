@@ -88,4 +88,5 @@ class BaseModel(object):
         # .format(table_name, field_name, data, item_p, item_id)
         cur.execute(query, (title, description, post_id))
         con.commit()
+        con.close()
         return "Updated"

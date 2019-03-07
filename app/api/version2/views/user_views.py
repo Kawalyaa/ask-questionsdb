@@ -52,8 +52,6 @@ class Auth(Resource):
             }), 401)
         record = UserModel().get_user_by_username(login['user_name'])
         user_id, password = record
-        # our user name has got the password and the user_id
-        # This means if login['user_name'] == user_name in table, record or user_name has user_id, password
         if password != login['password']:
             return make_response(jsonify({
                 "message": "user_name and password does not much"
@@ -61,7 +59,7 @@ class Auth(Resource):
         token = UserModel().ecnode_token(user_id)
         return make_response(jsonify({
             "message": "Welcome {}".format(login['user_name']),
-            "access_token": token
+            "access_token": str(token)
         }), 200)
 
 
@@ -95,13 +93,12 @@ class Registration(Resource):
 
         if not req:
             return jsonify({"mesage": "Content should be json"})
-        try:
-            name = req['name'].strip()
-            email = req['email'].strip()
-            password = req['password'].strip()
-            user_name = req['user_name'].strip()
-        except ValueError:
-            return jsonify({"message": "Incorect input"})
+        # try:
+        name = req['name'].strip()
+        email = req['email'].strip()
+        password = req['password'].strip()
+        user_name = req['user_name'].strip()
+
         if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
             return make_response(jsonify({"Message": "The email provided is invalid"}), 400)
         new = {
@@ -113,12 +110,13 @@ class Registration(Resource):
         validate_user(new)
         requester = UserModel(**new)
         res = requester.save()
-        if isinstance(res, str):
-            return make_response(jsonify({
-                "message": "User exists"}), 409)
+        if isinstance(res, int):
+            user_id = res
+            token = UserModel().ecnode_token(user_id)
 
-        token = UserModel().ecnode_token(res)
-        return make_response(jsonify({
-            "message": "created successfully",
-            "access_token": str(token)
-        }), 201)
+            return make_response(jsonify({
+                "message": "account created successfully",
+                "access_token": str(token),
+                "user_id": user_id
+            }), 201)
+        return make_response(jsonify({"user": "exists"}), 409)

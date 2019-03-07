@@ -10,6 +10,14 @@ class UserModel(BaseModel):
         self.password = password
         self.user_name = user_name
 
+    def check_exists(self, username):
+        """Check if the records exist"""
+        con = init_db()
+        cur = con.cursor()
+        query = "SELECT user_name FROM users WHERE user_name = '%s'" % (username)
+        cur.execute(query)
+        return cur.fetchone() is not None
+
     def save(self):
         """This method saves the user infomation"""
         user = {
@@ -18,14 +26,14 @@ class UserModel(BaseModel):
             "email": self.email,
             "password": self.password
         }
-
+        if self.check_exists(user["user_name"]):
+            return("user exists")
         con = init_db()
         """connect to db and create tables using  imported init_db function"""
 
         cur = con.cursor()
         """Execute psql statements we shall be using it always to execute statements"""
-        if BaseModel().check_exist('users', 'email', self.email) is True:
-            return "User already existsI!"
+
         query = """INSERT INTO users (name, user_name, email, password) VALUES \
         (%(name)s, %(user_name)s, %(email)s, %(password)s) RETURNING user_id"""
 
@@ -35,7 +43,7 @@ class UserModel(BaseModel):
         con.commit()
         # save changes to the DATABASE_URL
         con.close()
-        return user_id
+        return int(user_id)
 
     def logout(self, token):
         """This method keeps used tokens in the blacklist table"""
