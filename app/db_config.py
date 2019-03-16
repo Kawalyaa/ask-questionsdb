@@ -1,54 +1,35 @@
-import psycopg2
-import os
+# import psycopg2
+# import os
 
-uri = os.getenv('DATABASE_URL')
+# uri = os.getenv('DATABASE_URL')
 
-test_uri = os.getenv('DATABASE_TEST_URL')
-
-
-def connection(url):
-    """This method returns connection"""
-    con = psycopg2.connect(url)
-    return con
+# test_uri = os.getenv('DATABASE_TEST_URL')
 
 
-def init_db():
-    """ This method returns connection and creates tables"""
-    con = connection(uri)
-    cur = con.cursor()
-    queries = tables()
-    for query in queries:
-        cur.execute(query)
-    con.commit()
-    return con
+# def connection(url):
+#    """This method returns connection"""
+#    con = psycopg2.connect('')
+#    return con
 
 
-def init_tdb(test_url):
-    """returns connection and create tables for testing"""
-    con = connection(test_uri)
-    cur = con.cursor()
-    queries = tables()
-    for query in queries:
-        cur.execute(query)
-    con.commit()
-    return con
+# def init_db():
+#    """ This method returns connection and creates tables"""
+#    con = connection(uri)
+#    cur = con.cursor()
+#    queries = tables()
+#    for query in queries:
+#        cur.execute(query)
+#    con.commit()
+#    return con
 
 
 def destroydb():
     """Deletes all tables after tests have been run"""
-    con = connection(test_uri)
-    cur = con.cursor()
 
     posts = """DROP TABLE IF EXISTS posts CASCADE;"""
     users = """DROP TABLE IF EXISTS users CASCADE;"""
     blacklist = """DROP TABLE IF EXISTS blacklist CASCADE;"""
-
-    queries = [posts, users, blacklist]
-
-    for query in queries:
-        cur.execute(query)
-    con.commit()
-    return con
+    return[posts, users, blacklist]
 
 
 def tables():
@@ -73,6 +54,4 @@ def tables():
     blacklist = """CREATE TABLE IF NOT EXISTS blacklist (
     tokens character varying(200) NOT NULL
     ); """
-
-    queries = [users, posts, blacklist]
-    return queries
+    return[users, posts, blacklist]

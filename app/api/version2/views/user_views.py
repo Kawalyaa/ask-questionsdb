@@ -1,10 +1,14 @@
 from flask_restful import Resource
+import os
 from flask import request, make_response, jsonify
 from app.api.version2.models.user_model import UserModel
+# from app.api.version2.models.basemodel import BaseModel
 # from werkzeug.security import generate_password_hash
 from werkzeug.exceptions import BadRequest
 import string
 import re
+
+KEY = os.getenv("SECRET")
 
 
 def validate_user(user):
@@ -46,7 +50,10 @@ class Auth(Resource):
             "password": password
         }
         validate_user(login)
-        if UserModel().check_exist('users', 'user_name', login['user_name']) is False:
+        # if UserModel.check_exists(login['user_name']) is False:
+        # res = UserModel()
+        res = UserModel().check_exists(login['user_name'])
+        if res is False:
             return make_response(jsonify({
                 "message": "No user found"
             }), 401)
@@ -112,13 +119,15 @@ class Registration(Resource):
         }
         validate_user(new)
         requester = UserModel(**new)
-        res = requester.save()
-        if isinstance(res, str):
+        # check_exist = requester.get_user_by_username(new["user_name"])
+        # if not check_exist:
+        res = requester.save_user()
+        if isinstance(res, int):
+            token = UserModel.ecnode_token(res)
             return make_response(jsonify({
-                "message": "User exists"}), 409)
+                "message": "created successfully",
+                "access_token": token
+            }), 201)
 
-        token = UserModel().ecnode_token(res)
         return make_response(jsonify({
-            "message": "created successfully",
-            "access_token": str(token)
-        }), 201)
+            "message": "User exists"}), 409)

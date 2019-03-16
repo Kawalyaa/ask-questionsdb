@@ -1,11 +1,12 @@
-from app.db_config import init_db
+from app.db_con import DataBaseConnection as db_con
 from datetime import datetime, timedelta
 import jwt
 import os
 # fr# om flask import current_app, g
+KEY = os.getenv("SECRET")
 
 
-class BaseModel(object):
+class BaseModel(db_con):
     """class to stracture the user"""
     @staticmethod
     def ecnode_token(user_id):
@@ -21,9 +22,9 @@ class BaseModel(object):
             }
             token = jwt.encode(
                 payload,
-                os.getenv("SECRET"),
+                KEY,
                 algorithm="HS256"
-            ).decode('utf-8')
+            )  .decode('utf-8')
             resp = token
         except Exception as e:
             resp = e
@@ -33,17 +34,16 @@ class BaseModel(object):
     def blacklisted(self, token):
         """This method gets access_tokens which have been blacklisted or used"""
         """Once acess_token have been generated they are kept in blacklist table"""
-        con = init_db()
-        cur = con.cursor()
-        query = """SELECT FROM blacklist WHERE tokens = %s;"""
-        cur.execute(query, [token])
-        if cur.fetchone():
+
+        query = """SELECT FROM blacklist WHERE tokens = '{}';""".format(token)
+        get_one = self.fetch_single_data_row(query)
+        if get_one:
             return True
         return False
 
     def decode_token(self, auth_token):
         """This function takes in an authtoken and decodes it, returning an integer or string"""
-        if self.blacklisted(auth_token):
+        if self.blacklisted(auth_token) is True:
             return "Token has been blacklisted"
         secret = os.getenv("SECRET")
         try:
@@ -57,35 +57,22 @@ class BaseModel(object):
             return "The token is invalid"
 
     def check_exist(self, table_name, field_name, value):
-        con = init_db()
-        cur = con.cursor()
         query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, field_name, value)
-        cur.execute(query)
-        resp = cur.fetchall()
-        if resp:
-            return True
-        else:
-            return False
+        resp = self.fetch_all_tables_rows(query)
+        return resp is not None
 
     def delete_tb_value(self, table_name, field_name, value):
         if self.check_exist(table_name, field_name, value) is False:
             return "Item not found"
-        con = init_db()
-        cur = con.cursor()
-        query = "DELETE FROM {} WHERE {}={}".format(table_name, field_name, value)
-        cur.execute(query)
-        con.commit()
-        con.close()
+        query = "DELETE FROM {} WHERE {}={};".format(table_name, field_name, value)
+        self.save_incoming_data_or_updates(query)
         return "Deleted"
 
     def update_question(self, title, description, post_id):
         if self.check_exist('posts', 'post_id', post_id) is False:
             return "Not found"
-        con = init_db()
-        cur = con.cursor()
-        query = "UPDATE posts SET title = (%s), description = (%s)\
-        WHERE post_id = (%s) ;"
-        # .format(table_name, field_name, data, item_p, item_id)
-        cur.execute(query, (title, description, post_id))
-        con.commit()
+
+        query = "UPDATE posts SET title = '{}', description = '{}'\
+        WHERE post_id = '{}';".format(title, description, post_id)
+        self.save_incoming_data_or_updates(query)
         return "Updated"
