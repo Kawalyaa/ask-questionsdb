@@ -68,7 +68,7 @@ class Auth(Resource):
         token = UserModel().ecnode_token(user_id)
         return make_response(jsonify({
             "message": "Welcome {}".format(login['user_name']),
-            "access_token": token
+            "access_token": str(token)
         }), 200)
 
 
@@ -126,7 +126,7 @@ class Registration(Resource):
             token = UserModel.ecnode_token(res)
             return make_response(jsonify({
                 "message": "created successfully",
-                "access_token": token
+                "access_token": str(token)
             }), 201)
 
         return make_response(jsonify({

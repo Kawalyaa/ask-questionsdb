@@ -1,4 +1,5 @@
 from flask import Flask
+# from pgmanagedconnection import ManagedConnection
 from instance.config import app_config
 from app.db_con import DataBaseConnection
 from app.api.version2 import ver2 as v2
@@ -19,16 +20,24 @@ def creat_app(config_name):
 
     app.config.from_pyfile('config.py')
 
-    db_url = app_config[config_name].DATABASE_URL
+    # db_url = app_config[config_name].DATABASE_URL
+    # manager = ManagedConnection(db_url)
 
     # Print which database is being used in a given environment
-    print("\n\n\n", db_url, "\n\n\n")
+    # print("\n\n\n", db_url, "\n\n\n")
 
-    DataBaseConnection(db_url)
+    # DataBaseConnection(manager)
     # which has the db_url as its instance variable for connectio
-    if config_name == "testing":
-        """Deletes all tables after tests have been run"""
-        DataBaseConnection.drop_all_tables(DataBaseConnection)
-    DataBaseConnection.creat_tables(DataBaseConnection)
+    # db_url = DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
+    db_uri = DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
+    try:
+        if config_name == "testing":
+
+            """Deletes all tables after tests have been run"""
+            DataBaseConnection(db_uri).drop_all_tables()
+            DataBaseConnection(db_uri).creat_tables()
+        DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'").creat_tables()
+    except ConnectionError:
+        return ("connection error")
 
     return app

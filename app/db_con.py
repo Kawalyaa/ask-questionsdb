@@ -47,7 +47,7 @@ class DataBaseConnection:
         """get the user id"""
         cur.execute(query, user)
         user_id = cur.fetchone()[0]
-        # self.con.commit()
+        con.commit()
         return int(user_id)
 
     def get_all_tb_rows_by_id(self, query):
