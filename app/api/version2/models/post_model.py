@@ -13,7 +13,7 @@ class PostModel(BaseModel):
 
     def check_exists(self, table_name, field_name, value):
         query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, field_name, value)
-        resp = self.fetch_all_tables_rows(query)
+        resp = self.fetch_single_data_row(query)
         return resp is not None
 
     def save(self):
@@ -26,8 +26,9 @@ class PostModel(BaseModel):
         if self.check_exists('posts', 'title', posts["title"]) is True:
             return "Post already exists"
         query = """INSERT INTO posts (title, description, created_by, created_on) VALUES \
-         '{}', '{}', '{}', ('now')) RETURNING post_id;""".format(posts['title'], posts['description'], posts['created_by'])
-        self.save_user_and_return_id(query)
+         (%(title)s, %(description)s, %(created_by)s, ('now')) RETURNING post_id;"""
+        id = self.save_post_and_return_id(query, posts)
+        return id
 
     def get_posts(self):
         query = "SELECT * FROM posts;"
@@ -43,7 +44,7 @@ class PostModel(BaseModel):
                 created_by=int(created_by),
                 created_on=str(created_on)
             )
-        res.append(posts)
+            res.append(posts)
         return res
 
     def get_one_post(self, post_id):

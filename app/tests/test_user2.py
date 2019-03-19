@@ -16,7 +16,7 @@ class BaseTest(unittest.TestCase):
         self.client = self.app.test_client()
         self.data = {
             "name": "AbrahamOgol",
-            "user_name": "aogoll1",
+            "user_name": "aogollou",
             "email": "a5@aaaa.com",
             "password": "mcogols"
         }

@@ -20,15 +20,6 @@ def creat_app(config_name):
 
     app.config.from_pyfile('config.py')
 
-    # db_url = app_config[config_name].DATABASE_URL
-    # manager = ManagedConnection(db_url)
-
-    # Print which database is being used in a given environment
-    # print("\n\n\n", db_url, "\n\n\n")
-
-    # DataBaseConnection(manager)
-    # which has the db_url as its instance variable for connectio
-    # db_url = DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
     db_uri = DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
     try:
         if config_name == "testing":
@@ -36,6 +27,7 @@ def creat_app(config_name):
             """Deletes all tables after tests have been run"""
             DataBaseConnection(db_uri).drop_all_tables()
             DataBaseConnection(db_uri).creat_tables()
+
         DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'").creat_tables()
     except ConnectionError:
         return ("connection error")

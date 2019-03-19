@@ -12,7 +12,7 @@ class UserModel(BaseModel):
 
     def check_exists(self, username):
         """Check if the records exist"""
-        query = "SELECT FROM users WHERE user_name = '%s'" % (username)
+        query = "SELECT * FROM users WHERE user_name = '%s'" % (username)
         data = self.fetch_single_data_row(query)
         return data is not None
 

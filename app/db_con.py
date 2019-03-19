@@ -30,6 +30,7 @@ class DataBaseConnection:
         """ retreives a single row of data from a table """
         cur.execute(query)
         fetchedRow = cur.fetchone()
+        con.commit()
         return fetchedRow
 
     def save_incoming_data_or_updates(self, query):
@@ -46,6 +47,13 @@ class DataBaseConnection:
     def save_user_and_return_id(self, query, user):
         """get the user id"""
         cur.execute(query, user)
+        user_id = cur.fetchone()[0]
+        con.commit()
+        return int(user_id)
+
+    def save_post_and_return_id(self, query, posts):
+        """get the user id"""
+        cur.execute(query, posts)
         user_id = cur.fetchone()[0]
         con.commit()
         return int(user_id)
