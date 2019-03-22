@@ -24,7 +24,7 @@ class DataBaseConnection:
         drop_all = destroydb()
         for query in drop_all:
             cur.execute(query)
-        con.commit()
+            con.commit()
 
     def fetch_single_data_row(self, query):
         """ retreives a single row of data from a table """

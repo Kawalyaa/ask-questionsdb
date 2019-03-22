@@ -20,16 +20,19 @@ def creat_app(config_name):
 
     app.config.from_pyfile('config.py')
 
-    db_uri = DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
-    try:
-        if config_name == "testing":
+    # db_uri = DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
+    # try:
+    # if config_name == "testing":
 
-            """Deletes all tables after tests have been run"""
-            DataBaseConnection(db_uri).drop_all_tables()
-            DataBaseConnection(db_uri).creat_tables()
+    #    """Deletes all tables after tests have been run"""
+    #    DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'").creat_tables()
 
-        DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'").creat_tables()
-    except ConnectionError:
-        return ("connection error")
+    # DataBaseConnection(db_uri).drop_all_tables()
+    # DataBaseConnection(db_uri).creat_tables()
+    # DataBaseConnection(db_uri).drop_all_tables()
+
+    DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'").creat_tables()
+    # except ConnectionError:
+    #    return ("connection error")
 
     return app
