@@ -1,4 +1,5 @@
 from flask_restful import Resource
+import json
 from flask import request, make_response, jsonify
 from app.api.version2.models.post_model import PostModel
 
@@ -15,24 +16,29 @@ class QuestionBlogs(Resource):
         auth_t_oken = auth.split(" ")[1]
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
-            req = request.get_json()
+            created_by = response
+            req = json.loads(request.data.decode().replace("'", '"'))
+            # req = request.get_json()
             data = {
                 "title": req["title"],
                 "description": req["description"],
-                "created_by": req["created_by"]
+                "created_by": int(created_by)
             }
             requester = PostModel(**data)
-            res = requester.save()
-            if isinstance(res, int):
+            check = requester.check_exists('posts', 'title', data["title"])
+            if check:
+                return("question already exists")
+            post_id = requester.save()
+            if isinstance(post_id, int):
                 return make_response(jsonify({
                     "message": "Created",
-                    "post_id": res
+                    "post_id": post_id
                 }), 201)
-            else:
-                return make_response(jsonify({"message": "Post already exists"}), 409)
-        return make_response(jsonify({
-            "message": response
-        }), 401)
+        else:
+            # return make_response(jsonify({"message": "Post already exists"}), 409)
+            return make_response(jsonify({
+                "message": response
+            }), 401)
 
     def get(self):
         auth = request.headers.get('Authorization')
@@ -44,16 +50,17 @@ class QuestionBlogs(Resource):
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
             res = PostModel().get_posts()
-            if not res:
-                return make_response(jsonify({"message": "Database is empty"}), 200)
-            else:
+            # if not res:
+            #    return make_response(jsonify({"message": "Database is empty"}), 200)
+            if res:
                 return make_response(jsonify({
                     "message": "ok",
                     "post": res
                 }), 200)
-        return make_response(jsonify({
-            "message": response
-        }), 401)
+        else:
+            return make_response(jsonify({
+                "message": response
+            }), 401)
 
 
 class SingleQuestionBlog(Resource):
@@ -69,16 +76,17 @@ class SingleQuestionBlog(Resource):
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
             res = PostModel().get_one_post(post_id)
-            if res == 'Not found':
-                return make_response(jsonify({"message": "Not found"}), 404)
-            else:
+            # if res == 'Not found':
+            #    return make_response(jsonify({"message": "Not found"}), 404)
+            if res:
                 return make_response(jsonify({
                     "message": "ok",
                     "post": res
                 }), 200)
-        return make_response(jsonify({
-            "message": response
-        }), 401)
+        else:
+            return make_response(jsonify({
+                "message": response
+            }), 401)
 
     def put(self, post_id):
         auth = request.headers.get('Authorization')
@@ -98,13 +106,14 @@ class SingleQuestionBlog(Resource):
                 return make_response(jsonify({
                     "message": "question with id {} is updated".format(post_id)
                 }), 200)
-            else:
-                return make_response(jsonify({
-                    "message": "Not found!!"
-                }), 404)
-        return make_response(jsonify({
-            "message": response
-        }), 401)
+        else:
+            return make_response(jsonify({
+                "message": response
+            }), 401)
+
+            # return make_response(jsonify({
+            #    "message": "Not found!!"
+            # }), 404)
 
     def delete(self, post_id):
         auth = request.headers.get('Authorization')
@@ -120,8 +129,8 @@ class SingleQuestionBlog(Resource):
             if res == "Deleted":
                 message = "question with id {} is Deleted".format(post_id)
                 return make_response(jsonify({"message": message}), 200)
-            else:
-                return make_response(jsonify({"message": "Not found"}), 404)
-        return make_response(jsonify({
-            "message": response
-        }), 401)
+        else:
+            return make_response(jsonify({
+                "message": response
+            }), 401)
+            # return make_response(jsonify({"message": "Not found"}), 404)

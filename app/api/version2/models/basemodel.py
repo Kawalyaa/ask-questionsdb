@@ -24,7 +24,7 @@ class BaseModel(db_con):
                 payload,
                 KEY,
                 algorithm="HS256"
-            )  .decode('utf-8')
+            ).decode('utf-8')
             resp = token
         except Exception as e:
             resp = e
@@ -35,16 +35,17 @@ class BaseModel(db_con):
         """This method gets access_tokens which have been blacklisted or used"""
         """Once acess_token have been generated they are kept in blacklist table"""
 
-        query = """SELECT FROM blacklist WHERE tokens = '{}';""".format(token)
+        query = """SELECT * FROM blacklist WHERE tokens = '{}';""".format(token)
         get_one = self.fetch_single_data_row(query)
         if get_one:
             return True
         return False
 
-    def decode_token(self, auth_token):
+    @staticmethod
+    def decode_token(auth_token):
         """This function takes in an authtoken and decodes it, returning an integer or string"""
-        if self.blacklisted(auth_token) is True:
-            return "Token has been blacklisted"
+        # if self.blacklisted(auth_token) is True:
+        #    return "Token has been blacklisted"
         secret = os.getenv("SECRET")
         try:
             payload = jwt.decode(auth_token, secret)

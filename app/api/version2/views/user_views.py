@@ -123,10 +123,12 @@ class Registration(Resource):
         # if not check_exist:
         res = requester.save_user()
         if isinstance(res, int):
-            token = UserModel.ecnode_token(res)
+            user_id = res
+            token = UserModel.ecnode_token(user_id)
             return make_response(jsonify({
                 "message": "created successfully",
-                "access_token": str(token)
+                "access_token": str(token),
+                "user_id": user_id
             }), 201)
 
         return make_response(jsonify({
