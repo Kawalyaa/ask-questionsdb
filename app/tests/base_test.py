@@ -16,17 +16,16 @@ class BaseTest(unittest.TestCase):
         db_uri.creat_tables()
         self.app = creat_app('testing')
         self.client = self.app.test_client()
-        self.data = {
-            "name": "Kawalya",
-            "user_name": "andrewhi",
-            "email": "andrew5@aaaa.com",
-            "password": "bornagain"
-        }
+        # self.data = {
+        #    "name": "Kawalya",
+        #    "email": "andrew5@aaaa.com",
+        #    "password": "bornagain"
+        # }
 
-        self.login = {
-            "user_name": "andrewhi",
-            "password": "bornagain"
-        }
+        # self.login = {
+        #    "user_name": "andrewhi",
+        #    "password": "bornagain"
+        # }
 
         self.data2 = {
             "title": "WORLDI NEWZ",
@@ -37,14 +36,23 @@ class BaseTest(unittest.TestCase):
     def tearDown(self):
         db_uri.drop_all_tables()
 
-    def post_question_by_user(self):  # This is the method that made post test pass
-        """create a fictitious user"""
-        response = self.register_user("Kawalya", "andrewhi", "andrew5@aaaa.com", "bornagain")
-        response = self.login_user("andrewhi", "bornagain")
-        token = response.json['access_token']
-        # res = 'Authorization: Bearer {}'.format(access_token)
-        res = self.client.post('api/v2/question', data=json.dumps(self.data2), content_type='application/json', headers={"Authorization": "Bearer {}".format(token)})
-        return res
+    # def post_question_by_user(self):  # This is the method that made post test pass
+    #    """create a fictitious user"""
+    #    response = self.register_user("Kawalya", "andrewhi", "andrew5@aaaa.com", "bornagain")
+    #    response = self.login_user("andrewhi", "bornagain")
+    #    token = response.json['access_token']
+    #    # res = 'Authorization: Bearer {}'.format(access_token)
+    #    res = self.client.post('api/v2/question', data=json.dumps(self.data2), content_type='application/json', headers={"Authorization": "Bearer {}".format(token)})
+    #    return res
+
+    # def get_all_question_by_user(self):  # This is the method that made post test pass
+    #    response = self.register_user("Kawalya", "andrewhi", "andrew5@aaaa.com", "bornagain")
+    #    response = self.login_user("andrewhi", "bornagain")
+    #    token = response.json['access_token']
+    #    # res = 'Authorization: Bearer {}'.format(access_token)
+    #    # res = self.client.post('api/v2/question', data=json.dumps(self.data2), content_type='application/json', headers={"Authorization": "Bearer {}".format(token)})
+    #    res = self.client.get('api/v2/question', content_type='application/json', headers={"Authorization": "Bearer {}".format(token)})
+    #    return res
 
     # def post_data(self, path='/api/v2/question', data={}):
     #    """This function performs a POST request using the testing client"""
@@ -86,6 +94,26 @@ class BaseTest(unittest.TestCase):
             content_type='application/json'
         )
 
+    def post_aquestion_route(self, token):  # This is the method that made post test pass
+        """create a fictitious user"""
+        res = self.client.post('api/v2/question', data=json.dumps(self.data2), content_type='application/json', headers={"Authorization": "Bearer {}".format(token)})
+        return res
+
+    def get_qtn(self, path="/api/v2/question"):
+        token = self.get_token()
+        self.post_aquestion_route(token)
+
+        header = {
+            "Authorization": "Bearer {}".format(token),
+            "content-type": "application/json"
+        }
+        res = self.client.get(path=path, headers=header)
+        return res
+
+    def posting_question(self):
+        token = self.get_token()
+        res = self.post_aquestion_route(token)
+        return res
     # def post_question(self, token, title, description, created_by):
     #    """
     #    Method for posting a question
@@ -137,9 +165,9 @@ class BaseTest(unittest.TestCase):
     #    res = self.client.post(path=path, headers=header)
     #    return res
 
-    # def get_token(self):
-    #    """Returns user token"""
-    #    self.register_user("Kawalya", "andrewhi", "andrew5@aaaa.com", "bornagain")
-    #    response = self.login_user("andrewhi", "bornagain")
-    #    data = json.loads(response.data.decode())
-    #    return data['access_token']
+    def get_token(self):
+        """Returns user token"""
+        response = self.register_user("Kawalya", "andrewhi", "andrew5@aaaa.com", "bornagain")
+        response = self.login_user("andrewhi", "bornagain")
+        token = response.json['access_token']
+        return token

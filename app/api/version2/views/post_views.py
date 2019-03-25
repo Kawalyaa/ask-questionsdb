@@ -50,13 +50,15 @@ class QuestionBlogs(Resource):
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
             res = PostModel().get_posts()
-            # if not res:
-            #    return make_response(jsonify({"message": "Database is empty"}), 200)
             if res:
                 return make_response(jsonify({
                     "message": "ok",
                     "post": res
                 }), 200)
+
+            else:
+                return make_response(jsonify({"message": "Database is empty"}))
+
         else:
             return make_response(jsonify({
                 "message": response
