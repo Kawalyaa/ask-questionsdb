@@ -1,28 +1,3 @@
-# import psycopg2
-# import os
-
-# uri = os.getenv('DATABASE_URL')
-
-# test_uri = os.getenv('DATABASE_TEST_URL')
-
-
-# def connection(url):
-#    """This method returns connection"""
-#    con = psycopg2.connect('')
-#    return con
-
-
-# def init_db():
-#    """ This method returns connection and creates tables"""
-#    con = connection(uri)
-#    cur = con.cursor()
-#    queries = tables()
-#    for query in queries:
-#        cur.execute(query)
-#    con.commit()
-#    return con
-
-
 def destroydb():
     """Deletes all tables after tests have been run"""
 

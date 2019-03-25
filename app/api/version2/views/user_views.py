@@ -119,9 +119,8 @@ class Registration(Resource):
         }
         validate_user(new)
         requester = UserModel(**new)
-        # check_exist = requester.get_user_by_username(new["user_name"])
-        # if not check_exist:
         res = requester.save_user()
+        # save user and return id
         if isinstance(res, int):
             user_id = res
             token = UserModel.ecnode_token(user_id)

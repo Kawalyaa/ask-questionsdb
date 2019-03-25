@@ -29,3 +29,12 @@ class TestPosts(BaseTest):
         res = self.delete_aqtn()
         self.assertTrue(res.status_code, 200)
         self.assertTrue(res.json['message'], "question with id 1 is Deleted")
+
+    def test_post_with_no_token(self):
+        res = self.post_with_no_token()
+        self.assertTrue(res.status_code, 403)
+        self.assertTrue(res.json['message'], "No authorization header provided. This resource is secured")
+
+    def test_getting_from_empty_database(self):
+        res = self.get_from_empty_database()
+        self.assertTrue(res.json['message'], "Database is empty")

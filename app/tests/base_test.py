@@ -54,6 +54,16 @@ class BaseTest(unittest.TestCase):
             content_type='application/json'
         )
 
+    def logout_user(self, path='/api/v2/auth/logout'):
+        """Thid method logs out user"""
+        token = self.get_token()
+        header = {
+            "Authorization": "Bearer {}".format(token),
+            "content_type": "application/json"
+        }
+        res = self.client.post(path=path, headers=header)
+        return res
+
     def post_aquestion_route(self, token):
         """This method takes in token to generate post question route"""
         res = self.client.post('api/v2/question', data=json.dumps(self.data2), content_type='application/json', headers={"Authorization": "Bearer {}".format(token)})
@@ -103,6 +113,20 @@ class BaseTest(unittest.TestCase):
             "content_type": "application/json"
         }
         res = self.client.delete(path=path, headers=header)
+        return res
+
+    def post_with_no_token(self):
+        """posting question witth no token"""
+        res = self.client.post('api/v2/question', data=json.dumps(self.data2), content_type='application/json', headers={"Authorization": "Bearer {}"})
+        return res
+
+    def get_from_empty_database(self, path="/api/v2/question"):
+        token = self.get_token()
+        header = {
+            "Authorization": "Bearer {}".format(token),
+            "content-type": "application/json"
+        }
+        res = self.client.get(path=path, headers=header)
         return res
 
     def get_token(self):
