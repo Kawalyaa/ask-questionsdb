@@ -11,13 +11,21 @@ class TestPosts(BaseTest):
         self.assertTrue(res.json['message'], "created")
 
     def test_getting_blog(self):
-        response = self.get_qtn()
-        self.assertTrue(response.status_code, 200)
+        res = self.get_qtn()
+        self.assertTrue(res.status_code, 200)
+        self.assertTrue(res.json['message'], "ok")
 
-        # res = self.get_all_question_by_user()
-        # self.assertEqual(res.status_code, 200)
-        # with self.client:
-        #    response = self.register_user("Kawalya", "andrewhi", "andrew5@aaaa.com", "bornagain")
-        #    response = self.login_user("andrewhi", "bornagain")
-        #    # token = self.get_token()
-        #    response = self.post_question("INFOMATION", "Is CCTV found in central china!!"
+    def test_getting_one_qtn(self):
+        res = self.get_asingle_qtn()
+        self.assertTrue(res.status_code, 200)
+        self.assertTrue(res.json['message'], "ok")
+
+    def test_editing_qtn(self):
+        res = self.edit_aqtn()
+        self.assertTrue(res.status_code, 200)
+        self.assertTrue(res.json['message'], "question with id 1 is updated")
+
+    def test_deleting_aqtn(self):
+        res = self.delete_aqtn()
+        self.assertTrue(res.status_code, 200)
+        self.assertTrue(res.json['message'], "question with id 1 is Deleted")

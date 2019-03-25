@@ -17,8 +17,9 @@ class QuestionBlogs(Resource):
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
             created_by = response
-            req = json.loads(request.data.decode().replace("'", '"'))
+            # req = json.loads(request.data.decode().replace("'", '"'))
             # req = request.get_json()
+            req = request.get_json()
             data = {
                 "title": req["title"],
                 "description": req["description"],

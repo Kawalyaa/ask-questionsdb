@@ -63,3 +63,12 @@ class PostModel(BaseModel):
         )
         res.append(posts)
         return res
+
+    def update_question(self, title, description, post_id):
+        if self.check_exists('posts', 'post_id', post_id) is False:
+            return "Not found"
+
+        query = "UPDATE posts SET title = '{}', description = '{}'\
+        WHERE post_id = '{}';".format(title, description, post_id)
+        self.save_incoming_data_or_updates(query)
+        return "Updated"
