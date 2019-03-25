@@ -1,0 +1,44 @@
+import os
+"""We are importing os to use the environment variable exported in .nve file"""
+class Config(object):
+    """Parent configuration class contains infomation where all other environments will inherit"""
+    DEGUG = False
+    TESTING = False
+    SECRET = os.getenv("SECRET")
+    """This gets the secret key from the .env file"""
+    DATABASE_URL = os.getenv("DATABASE_URL")
+
+    #DATABASE_URI = os.getenv("DATABASE_URL")
+    #"""This gets the database url from .env file"""
+
+    # DATABASE_TEST_URI = os.getenv("DATABASE_TEST_URL")
+    #"""This gets the database url for testing from .env"""
+
+class DevelopmentConfig(Config):
+    """Configuration for development"""
+    DEBUG = True
+    DATABASE_URL = os.getenv("DATABASE_URL")
+
+
+class TestingConfig(Config):
+    """Configuration for Testing with seperate database"""
+    TESTING = True
+    DEBUG = True
+    DATABASE_URL = os.getenv("DATABASE_TEST_URL")
+
+class StagingConfig(Config):
+    """Configurations for staging"""
+    DEBUG = True
+
+class ProductionConfig(Config):
+    """Configurations for Production"""
+    TESTING = False
+    DEBUG = False
+    DATABASE_URL = os.getenv("DATABASE_URL")
+
+app_config = {
+"development": DevelopmentConfig,
+"testing": TestingConfig,
+"staging": StagingConfig,
+"production": ProductionConfig
+}
