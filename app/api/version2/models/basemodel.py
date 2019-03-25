@@ -68,12 +68,3 @@ class BaseModel(db_con):
         query = "DELETE FROM {} WHERE {}={};".format(table_name, field_name, value)
         self.save_incoming_data_or_updates(query)
         return "Deleted"
-
-    def update_question(self, title, description, post_id):
-        if self.check_exist('posts', 'post_id', post_id) is False:
-            return "Not found"
-
-        query = "UPDATE posts SET title = '{}', description = '{}'\
-        WHERE post_id = '{}';".format(title, description, post_id)
-        self.save_incoming_data_or_updates(query)
-        return "Updated"

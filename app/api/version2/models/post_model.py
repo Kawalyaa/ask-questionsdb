@@ -23,8 +23,6 @@ class PostModel(BaseModel):
             "description": self.description,
             "created_by": self.created_by
         }
-        # if self.check_exists('posts', 'title', posts["title"]) is True:
-        #    return "Post already exists"
         query = """INSERT INTO posts (title, description, created_by, created_on) VALUES \
          (%(title)s, %(description)s, %(created_by)s, ('now')) RETURNING post_id;"""
         id = self.save_post_and_return_id(query, posts)

@@ -1,5 +1,5 @@
 from flask_restful import Resource
-import json
+# import json
 from flask import request, make_response, jsonify
 from app.api.version2.models.post_model import PostModel
 
@@ -17,8 +17,6 @@ class QuestionBlogs(Resource):
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
             created_by = response
-            # req = json.loads(request.data.decode().replace("'", '"'))
-            # req = request.get_json()
             req = request.get_json()
             data = {
                 "title": req["title"],
@@ -36,7 +34,6 @@ class QuestionBlogs(Resource):
                     "post_id": post_id
                 }), 201)
         else:
-            # return make_response(jsonify({"message": "Post already exists"}), 409)
             return make_response(jsonify({
                 "message": response
             }), 401)
@@ -113,10 +110,6 @@ class SingleQuestionBlog(Resource):
             return make_response(jsonify({
                 "message": response
             }), 401)
-
-            # return make_response(jsonify({
-            #    "message": "Not found!!"
-            # }), 404)
 
     def delete(self, post_id):
         auth = request.headers.get('Authorization')
