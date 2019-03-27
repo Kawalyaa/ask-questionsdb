@@ -2,8 +2,6 @@ from flask_restful import Resource
 import os
 from flask import request, make_response, jsonify
 from app.api.version2.models.user_model import UserModel
-# from app.api.version2.models.basemodel import BaseModel
-# from werkzeug.security import generate_password_hash
 from werkzeug.exceptions import BadRequest
 import string
 import re
@@ -20,20 +18,25 @@ def validate_user(user):
         # validate length
         if key == "user_name":
             if len(value) < 4:
-                raise BadRequest("The {} provided is too short".format(key))
+                raise BadRequest("The {} provided is too short, it should be 5 characters above".format(key))
             elif len(value) > 15:
-                raise BadRequest("The {} provided is too long".format(key))
+                raise BadRequest("The {} provided is too long, it should be less than 15 characters".format(key))
         if key == "password":
             if len(value) < 4:
-                raise BadRequest("The {} provided is too short".format(key))
+                raise BadRequest("The {} provided is too short, it should be 5 characters above".format(key))
             elif len(value) > 18:
-                raise BadRequest("The {} provided is too long".format(key))
+                raise BadRequest("The {} provided is too long, it should be less than 18 characters".format(key))
+
         if key == "name":
-            # make sure the value provided is a Registering
+            # make sure the value provided is a string
             for i in value:
 
                 if i not in string.ascii_letters:
                     raise BadRequest("{} can not have non alphatic characters".format(key))
+        if key == "email":
+            # make sure email contains expetected characters
+            if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', value):
+                raise BadRequest("The email provided is invalid")
 
 
 class Auth(Resource):
@@ -50,8 +53,6 @@ class Auth(Resource):
             "password": password
         }
         validate_user(login)
-        # if UserModel.check_exists(login['user_name']) is False:
-        # res = UserModel()
         res = UserModel().check_exists(login['user_name'])
         if res is False:
             return make_response(jsonify({
@@ -83,7 +84,6 @@ class AuthLogOut(Resource):
         auth_t_oken = auth.split(" ")[1]
         response = UserModel().decode_token(auth_t_oken)
         if isinstance(response, int):
-            # token = response
             UserModel().logout(auth_t_oken)
             return make_response(jsonify({
                 ""
@@ -109,8 +109,8 @@ class Registration(Resource):
             user_name = req['user_name'].strip()
         except ValueError:
             return jsonify({"message": "Incorect input"})
-        if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
-            return make_response(jsonify({"Message": "The email provided is invalid"}), 400)
+        # if not re.match(r'^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email):
+        #    return make_response(jsonify({"Message": "The email provided is invalid"}), 400)
         new = {
             "name": name,
             "email": email,

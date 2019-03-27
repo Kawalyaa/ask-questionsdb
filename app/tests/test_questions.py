@@ -8,7 +8,7 @@ class TestPosts(BaseTest):
         # res = self.post_question_by_user()
         res = self.posting_question()
         self.assertTrue(res.status_code, 201)
-        self.assertTrue(res.json['message'], "created")
+        self.assertTrue(res.json['message'], "Question Created successfully")
 
     def test_getting_blog(self):
         res = self.get_qtn()

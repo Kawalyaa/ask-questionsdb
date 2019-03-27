@@ -1,4 +1,4 @@
-# from app.db_con import DataBaseConnection as db_con
+from werkzeug.exceptions import BadRequest
 from app.api.version2.models.basemodel import BaseModel
 from datetime import datetime
 
@@ -15,6 +15,17 @@ class PostModel(BaseModel):
         query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, item_name, value)
         resp = self.fetch_single_data_row(query)
         return resp is not None
+
+    def validate(self, the_input):
+        for key, value in the_input.items():
+            if not value:
+                raise BadRequest("{} should not be empty".format(key))
+            if key == "title":
+                if isinstance(value, int):
+                    raise BadRequest("{} value should be a string".format(key))
+            if key == "description":
+                if isinstance(value, int):
+                    raise BadRequest("{} value should be a string".format(key))
 
     def save(self):
         """This method saves the post infomation"""

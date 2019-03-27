@@ -1,0 +1,40 @@
+This endpint login registered users
+tags:
+  - User Authentication
+  parameters:
+    - name: body
+    description: This contains user login deatails
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "user_name"
+        - "password"
+        properties:
+          user_name:
+            type: "string"
+            example: "kawalyai"
+            password:
+              type: "string"
+              format: password
+              example: "bornagain"
+      responses:
+        200:
+          description: The user is successfully registered
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                enum:
+                  - "Welcome kawalyai"
+            401:
+              description: Failed to login user
+              chema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    enum:
+                      - "user_name and password does not much"

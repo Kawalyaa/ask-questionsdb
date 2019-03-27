@@ -23,14 +23,15 @@ class QuestionBlogs(Resource):
                 "description": req["description"],
                 "created_by": int(created_by)
             }
+            PostModel().validate(data)
             requester = PostModel(**data)
             check = requester.check_exists('posts', 'title', data["title"])
             if check:
-                return("question already exists")
+                return("question already exists"), 409
             post_id = requester.save()
             if isinstance(post_id, int):
                 return make_response(jsonify({
-                    "message": "Created",
+                    "message": "Question Created successfully",
                     "post_id": post_id
                 }), 201)
         else:
@@ -76,8 +77,6 @@ class SingleQuestionBlog(Resource):
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
             res = PostModel().get_one_post(post_id)
-            # if res == 'Not found':
-            #    return make_response(jsonify({"message": "Not found"}), 404)
             if res:
                 return make_response(jsonify({
                     "message": "ok",
@@ -129,4 +128,3 @@ class SingleQuestionBlog(Resource):
             return make_response(jsonify({
                 "message": response
             }), 401)
-            # return make_response(jsonify({"message": "Not found"}), 404)
