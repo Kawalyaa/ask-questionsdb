@@ -61,7 +61,6 @@ class DataBaseConnection:
     def get_all_tb_rows_by_id(self, query):
         """return all rows by id"""
         cur.execute(query)
-        id = cur.fetchall()[0]
-        # fetch all values from one culom where post_id == post_id in get_one_post
-        # self.con.commit()
-        return id
+        data = cur.fetchall()[0]
+        # fetch all values from one colom and return them in a list
+        return data

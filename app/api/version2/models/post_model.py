@@ -59,7 +59,7 @@ class PostModel(BaseModel):
     def get_one_post(self, post_id):
 
         if self.check_exists('posts', 'post_id', post_id) is False:
-            return ('Not found')
+            return ('Not found'), 404
         query = "SELECT title, description, created_by, created_on FROM posts WHERE post_id={};".format(post_id)
         data = self.get_all_tb_rows_by_id(query)
         res = []
@@ -75,7 +75,7 @@ class PostModel(BaseModel):
 
     def update_question(self, title, description, post_id):
         if self.check_exists('posts', 'post_id', post_id) is False:
-            return "Not found"
+            return ("Not found"), 404
 
         query = "UPDATE posts SET title = '{}', description = '{}'\
         WHERE post_id = '{}';".format(title, description, post_id)

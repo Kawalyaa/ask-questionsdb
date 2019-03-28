@@ -8,7 +8,7 @@ db_uri = DataBaseConnection("dbname='question_test' host='localhost' port=5432  
 
 
 class BaseTest(unittest.TestCase):
-    """ The base class for seeting user tests and tearing down """
+    """ The base class for seting user tests and tearing down """
 
     def setUp(self):
         """ set the variables before each test """

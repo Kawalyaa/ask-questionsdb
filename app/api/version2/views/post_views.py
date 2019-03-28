@@ -97,7 +97,6 @@ class SingleQuestionBlog(Resource):
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
             data = request.get_json()
-            # for key, value, in data.items():
             title = data['title']
             description = data['description']
             res = PostModel().update_question(title, description, post_id)
