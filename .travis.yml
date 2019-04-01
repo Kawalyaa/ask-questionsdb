@@ -14,7 +14,7 @@ install:
 services:
   - postgresql
 addons:
-  postgresql: "10.5"
+  postgresql: "9.6"
 
 dist: trusty
 
