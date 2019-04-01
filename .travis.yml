@@ -21,7 +21,7 @@ dist: trusty
 before_script:
   - psql -c 'CREATE DATABASE kawalya;' -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres ;" -U postgres
-
+set: -e
 script:
   - nosetests --with-coverage --cover-package=app app/tests
 
