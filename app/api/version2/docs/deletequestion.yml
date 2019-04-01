@@ -1,22 +1,22 @@
 Endpoint for deleting a question
-
+---
 tags:
-  - Question
-  parameters:
-    - in: path
+  - Questions
+parameters:
+  - in: path
     name: post_id
     required: true
     type: integer
     description: input id of question
-  responnses:
+responnses:
     200:
       description: Question deleted successfully.
     404:
       description: Question not found.
     401:
       description: Not authorized to delete the question.
-  security:
-    - JWT:
+security:
+  - JWT:
       description: pass in jwt token ie Bearer <jwt_token>
       type: apiKey
       schema: Bearer

@@ -1,11 +1,13 @@
 from flask_restful import Resource
-# import json
+from flasgger import swag_from
 from flask import request, make_response, jsonify
 from app.api.version2.models.post_model import PostModel
 
 
 class QuestionBlogs(Resource):
     """class to handle question views without id request """
+
+    @swag_from('../docs/postquestion.yml')
     def post(self):
         """creating a blog and protecting routes"""
         auth = request.headers.get('Authorization')
@@ -39,7 +41,9 @@ class QuestionBlogs(Resource):
                 "message": response
             }), 401)
 
+    @swag_from('../docs/getallquestions.yml')
     def get(self):
+        """getting all questions"""
         auth = request.headers.get('Authorization')
         if not auth:
             return make_response(jsonify({
@@ -67,7 +71,9 @@ class QuestionBlogs(Resource):
 class SingleQuestionBlog(Resource):
     """class to handle views which require id"""
 
+    @swag_from('../docs/getonequestion.yml')
     def get(self, post_id):
+        """get aquestion by id """
         auth = request.headers.get('Authorization')
         if not auth:
             return make_response(jsonify({
@@ -87,6 +93,7 @@ class SingleQuestionBlog(Resource):
                 "message": response
             }), 401)
 
+    @swag_from('../docs/editquestion.yml')
     def put(self, post_id):
         auth = request.headers.get('Authorization')
         if not auth:
@@ -109,6 +116,7 @@ class SingleQuestionBlog(Resource):
                 "message": response
             }), 401)
 
+    @swag_from('../docs/deletequestion.yml')
     def delete(self, post_id):
         auth = request.headers.get('Authorization')
         if not auth:

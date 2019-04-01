@@ -1,8 +1,20 @@
 from flask import Flask
-# from pgmanagedconnection import ManagedConnection
+from flasgger import Swagger
+# from flask_cors import CORS
 from instance.config import app_config
 from app.db_con import DataBaseConnection
 from app.api.version2 import ver2 as v2
+
+
+def url_for_testing(url=DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")):
+    # url connection for testing
+    url.drop_all_tables()
+    url.creat_tables()
+
+
+def url_for_dev(url=DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")):
+    # url connection for decelopment
+    url.creat_tables()
 
 
 def creat_app(config_name):
@@ -12,27 +24,23 @@ def creat_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
     """using instance_relative_config will load config file from instance folder when app created"""
     """Loading the configurations from config.py contained in the instance folder"""
+    # CORS(app)
     app.register_blueprint(v2)
-    """Registering bluprint to the app"""
+    """Registering blueprint to the app"""
+    # name_space = app.namespace()
+
+    app.config['SWAGGER'] = {'uiversion': 2, 'title': 'askquestiondb',
+                             'description': "is a web based app that enables users to \
+                             ask questions on the platform and get answers.",
+                             'basePath': '', 'version': '2.0.1'}
+    Swagger(app)
 
     app.config.from_object(app_config[config_name])
     """We are loading the default configuration"""
 
     app.config.from_pyfile('config.py')
-
-    # db_uri = DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
-    # try:
-    # if config_name == "testing":
-
-    #    """Deletes all tables after tests have been run"""
-    #    DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'").creat_tables()
-
-    # DataBaseConnection(db_uri).drop_all_tables()
-    # DataBaseConnection(db_uri).creat_tables()
-    # DataBaseConnection(db_uri).drop_all_tables()
-
-    DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'").creat_tables()
-    # except ConnectionError:
-    #    return ("connection error")
-
+    # Loading db_connection
+    if config_name == "testing":
+        url_for_testing()
+    url_for_dev()
     return app

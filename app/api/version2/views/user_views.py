@@ -1,6 +1,8 @@
 from flask_restful import Resource
+import yaml
 import os
 from flask import request, make_response, jsonify
+from flasgger import swag_from
 from app.api.version2.models.user_model import UserModel
 from werkzeug.exceptions import BadRequest
 import string
@@ -41,6 +43,8 @@ def validate_user(user):
 
 class Auth(Resource):
     """class to handle user login"""
+
+    @swag_from('../docs/login.yml')
     def post(self):
         req = request.get_json()
         if not req:
@@ -74,6 +78,7 @@ class Auth(Resource):
 
 
 class AuthLogOut(Resource):
+    """class to handle user logout"""
 
     def post(self):
         auth = request.headers.get('Authorization')
@@ -95,8 +100,9 @@ class AuthLogOut(Resource):
 
 
 class Registration(Resource):
-    """class t register new user"""
+    """class to register new user"""
 
+    @swag_from('../docs/signup.yml')
     def post(self):
         req = request.get_json()
 

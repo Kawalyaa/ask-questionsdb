@@ -6,7 +6,7 @@ from app.api.version2.views.user_views import Auth, Registration, AuthLogOut
 """Adding blueprint to our app"""
 ver2 = Blueprint('api_v2', __name__, url_prefix='/api/v2')
 
-"""We are using Api to make our version2 browsable"""
+"""We are  Creating a Flask-restful API"""
 api = Api(ver2)
 
 """Registering our app routes by adding resource"""
