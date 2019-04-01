@@ -1,6 +1,6 @@
 language: python
 env:
-  FLASK_ENV=development
+  FLASK_ENV=testing
   DATABASE_URL="dbname='kawalya' host='localhost' port=5432  user='kawalya' password=''"
   DATABASE_TEST_URL="dbname='question_test' host='localhost' port=5432  user='kawalya' password=''"
 
