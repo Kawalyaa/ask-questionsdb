@@ -1,6 +1,5 @@
 from flask import Flask
 from flasgger import Swagger
-# from flask_cors import CORS
 from instance.config import app_config
 from app.db_con import DataBaseConnection
 from app.api.version2 import ver2 as v2

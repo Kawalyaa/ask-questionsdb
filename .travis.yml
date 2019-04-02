@@ -3,7 +3,6 @@ env:
   FLASK_ENV=testing
   DATABASE_URL="dbname='kawalya' host='localhost' port=5432  user='kawalya' password=''"
   DATABASE_TEST_URL="dbname='question_test' host='localhost' port=5432  user='kawalya' password=''"
-
 python:
   - "3.6"
 
@@ -14,13 +13,14 @@ install:
 services:
   - postgresql
 addons:
-  postgresql: "10.5"
+  postgresql: "9.6"
 
 dist: trusty
 
 before_script:
   - psql -c 'CREATE DATABASE kawalya;' -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres ;" -U postgres
+  - python run.py
 
 script:
   - nosetests --with-coverage --cover-package=app app/tests
