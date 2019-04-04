@@ -13,14 +13,8 @@ class PostModel(BaseModel):
 
     def check_exists(self, table_name, item_name, value):
         query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, item_name, value)
-        con = self.conn()
-        cur = self.cursor()
-        cur.execute(query)
-        resp = cur.fetchone()
-        con.commit()
+        resp = self.fetch_single_data_row(query)
         return resp is not None
-        # resp = self.fetch_single_data_row(query)
-        # return resp is not None
 
     def validate(self, the_input):
         for key, value in the_input.items():
@@ -42,22 +36,12 @@ class PostModel(BaseModel):
         }
         query = """INSERT INTO posts (title, description, created_by, created_on) VALUES \
          (%(title)s, %(description)s, %(created_by)s, ('now')) RETURNING post_id;"""
-        con = self.conn()
-        cur = self.cursor()
-        # save posts and return post id
-        cur.execute(query, posts)
-        id = cur.fetchone()[0]
-        con.commit()
-        # id = self.save_post_and_return_id(query, posts)
-        return int(id)
+        id = self.save_post_and_return_id(query, posts)
+        return id
 
     def get_posts(self):
         query = "SELECT * FROM posts;"
-        # con = self.conn()
-        cur = self.cursor()
-        cur.execute(query)
-        data = cur.fetchall()
-        # data = self.fetch_all_tables_rows(query)
+        data = self.fetch_all_tables_rows(query)
         res = []
 
         for i, items in enumerate(data):
@@ -77,10 +61,7 @@ class PostModel(BaseModel):
         if self.check_exists('posts', 'post_id', post_id) is False:
             return ('Not found'), 404
         query = "SELECT title, description, created_by, created_on FROM posts WHERE post_id={};".format(post_id)
-        cur = self.cursor()
-        cur.execute(query)
-        data = cur.fetchall()[0]
-        # data = self.get_all_tb_rows_by_id(query)
+        data = self.get_all_tb_rows_by_id(query)
         res = []
 
         posts = dict(
@@ -98,9 +79,5 @@ class PostModel(BaseModel):
 
         query = "UPDATE posts SET title = '{}', description = '{}'\
         WHERE post_id = '{}';".format(title, description, post_id)
-        con = self.conn()
-        cur = self.cursor()
-        cur.execute(query)
-        con.commit()
-        # self.save_incoming_data_or_updates(query)
+        self.save_incoming_data_or_updates(query)
         return "Updated"
