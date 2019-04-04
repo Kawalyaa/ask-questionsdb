@@ -15,6 +15,8 @@ def url_for_testing(url=DataBaseConnection("dbname='question_test' host='localho
 def url_for_dev(url=DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")):
     # url connection for decelopment
     url.creat_tables()
+    url.conn()
+    url.cursor()
     # url.fetch_all_tables_rows()
     # url.fetch_single_data_row()
     # url.get_all_tb_rows_by_id()

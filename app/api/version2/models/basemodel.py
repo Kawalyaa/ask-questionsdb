@@ -36,10 +36,18 @@ class BaseModel(db_con):
         """Once acess_token have been generated they are kept in blacklist table"""
 
         query = """SELECT * FROM blacklist WHERE tokens = '{}';""".format(token)
-        get_one = self.fetch_single_data_row(query)
+        cur = self.cursor()
+        con = self.conn()
+        cur.execute(query)
+        get_one = cur.fetchone()
+        con.commit()
         if get_one:
             return True
         return False
+        # get_one = self.fetch_single_data_row(query)
+        # if get_one:
+        #    return True
+        # return False
 
     @staticmethod
     def decode_token(auth_token):
@@ -59,8 +67,13 @@ class BaseModel(db_con):
 
     def check_exist(self, table_name, field_name, value):
         query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, field_name, value)
-        resp = self.fetch_all_tables_rows(query)
+        cur = self.cursor()
+        cur.execute(query)
+        # fetches all rows of data store
+        resp = cur.fetchall()
         return resp is not None
+        # resp = self.fetch_all_tables_rows(query)
+        # return resp is not None
 
     def delete_tb_value(self, table_name, field_name, value):
         if self.check_exist(table_name, field_name, value) is False:

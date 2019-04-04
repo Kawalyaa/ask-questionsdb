@@ -26,6 +26,12 @@ class DataBaseConnection:
             cur.execute(query)
             con.commit()
 
+    def cursor(self):
+        return cur
+
+    def conn(self):
+        return con
+
     def fetch_single_data_row(self, query):
         """ retreives a single row of data from a table """
         cur.execute(query)
