@@ -7,7 +7,7 @@ from app.api.version2 import ver2 as v2
 
 
 def url_for_testing(url=DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")):
-    # url connection for testing
+
     url.drop_all_tables()
     url.creat_tables()
 
@@ -15,6 +15,12 @@ def url_for_testing(url=DataBaseConnection("dbname='question_test' host='localho
 def url_for_dev(url=DataBaseConnection("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")):
     # url connection for decelopment
     url.creat_tables()
+    # url.fetch_all_tables_rows()
+    # url.fetch_single_data_row()
+    # url.get_all_tb_rows_by_id()
+    # url.save_incoming_data_or_updates()
+    # url.save_post_and_return_id()
+    # url.save_user_and_return_id()
 
 
 def creat_app(config_name):

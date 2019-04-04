@@ -3,7 +3,6 @@ from app.tests.base_test import BaseTest
 
 class TestPosts(BaseTest):
     """docstring for TestUser"""
-
     def test_posting_blog(self):
         # res = self.post_question_by_user()
         res = self.posting_question()

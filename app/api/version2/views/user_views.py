@@ -1,5 +1,5 @@
 from flask_restful import Resource
-import yaml
+# import yaml
 import os
 from flask import request, make_response, jsonify
 from flasgger import swag_from

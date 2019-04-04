@@ -21,10 +21,10 @@ dist: trusty
 before_script:
   - psql -c 'CREATE DATABASE kawalya;' -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres ;" -U postgres
-  - python DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password=''")
+  - python from app import app
 
 script:
-  - nosetests --with-coverage --cover-package=app
+  - nosetests --with-coverage --cover-package=app app/tests
 
 after_success:
   - coveralls

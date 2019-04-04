@@ -1,7 +1,10 @@
 # import os
 import json
 import unittest
+from app.db_con import DataBaseConnection
 from app import creat_app
+
+db_uri = DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
 
 
 class BaseTest(unittest.TestCase):
@@ -9,6 +12,7 @@ class BaseTest(unittest.TestCase):
 
     def setUp(self):
         """ set the variables before each test """
+        db_uri.creat_tables()
         self.app = creat_app('testing')
         self.client = self.app.test_client()
 
@@ -19,8 +23,7 @@ class BaseTest(unittest.TestCase):
         }
 
     def tearDown(self):
-        # db_uri.drop_all_tables()
-        pass
+        db_uri.drop_all_tables()
 
     def login_user(self, user_name, password):
         """
