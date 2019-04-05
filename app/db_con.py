@@ -61,8 +61,8 @@ class DataBaseConnection:
         all_data_rows = cur.fetchall()
         return all_data_rows
 
-    def save_user_and_return_id(self, query, user):
-        """get the user id"""
+    def save_and_return_id(self, query, user):
+        """get the user or post id"""
         con = self.init_db()
         cur = con.cursor()
         cur.execute(query, user)
@@ -70,14 +70,14 @@ class DataBaseConnection:
         con.commit()
         return int(user_id)
 
-    def save_post_and_return_id(self, query, posts):
-        """get the user id"""
-        con = self.init_db()
-        cur = con.cursor()
-        cur.execute(query, posts)
-        user_id = cur.fetchone()[0]
-        con.commit()
-        return int(user_id)
+    # def save_post_and_return_id(self, query, posts):
+    #    """get the user id"""
+    #    con = self.init_db()
+    #    cur = con.cursor()
+    #    cur.execute(query, posts)
+    #    user_id = cur.fetchone()[0]
+    #    con.commit()
+    #    return int(user_id)
 
     def get_all_tb_rows_by_id(self, query):
         """return all rows by id"""

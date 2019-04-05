@@ -29,7 +29,7 @@ class UserModel(BaseModel):
         (%(name)s, %(user_name)s, %(email)s, %(password)s) RETURNING user_id"""
         if self.check_exists(user['user_name']) is True:
             return("User already exists")
-        id = self.save_user_and_return_id(query, user)
+        id = self.save_and_return_id(query, user)
         return int(id)
 
         # executing aquery and user into a table
@@ -48,5 +48,4 @@ class UserModel(BaseModel):
         query = """SELECT user_id, password \
         FROM users WHERE user_name = '{}'""".format(user_name)
         user_info = self.fetch_single_data_row(query)
-        """ the db_conn in the fetch method serves as self in a staticmethod """
         return user_info

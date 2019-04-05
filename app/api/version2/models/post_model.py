@@ -36,7 +36,7 @@ class PostModel(BaseModel):
         }
         query = """INSERT INTO posts (title, description, created_by, created_on) VALUES \
          (%(title)s, %(description)s, %(created_by)s, ('now')) RETURNING post_id;"""
-        id = self.save_post_and_return_id(query, posts)
+        id = self.save_and_return_id(query, posts)
         return id
 
     def get_posts(self):
