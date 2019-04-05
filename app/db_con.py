@@ -15,8 +15,11 @@ class DataBaseConnection:
     #        print(error)
 
     def init_db(self):
-        con = psycopg2.connect('')
-        return con
+        try:
+            con = psycopg2.connect("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
+            return con
+        except ConnectionError:
+            return ("no connection")
 
     def creat_tables(self):
         all_tables = tables()

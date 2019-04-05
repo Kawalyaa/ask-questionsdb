@@ -4,6 +4,7 @@ from flasgger import Swagger
 from instance.config import app_config
 # from app.db_con import DataBaseConnection
 from app.api.version2 import ver2 as v2
+from app.db_con import DataBaseConnection
 
 
 # def url_for_testing(url=DataBaseConnection("dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'")):
@@ -41,8 +42,9 @@ def creat_app(config_name):
     """We are loading the default configuration"""
 
     app.config.from_pyfile('config.py')
+    DataBaseConnection().creat_tables()
     # Loading db_connection
-    # if config_name == "testing":
+    # if config_name == "development":
     #    url_for_testing()
     # url_for_dev()
     return app
