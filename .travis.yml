@@ -2,6 +2,10 @@ language: python
 
 python:
   - "3.6"
+env:
+  export DATABASE_URL="dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'"
+  export DATABASE_TEST_URL="dbname='question_test' host='localhost' port=5432  user='kawalya' password='kawalyaa'"
+  APP_SETTINGS="testing"
 
 services:
   - postgresql
@@ -9,10 +13,10 @@ services:
 before_script:
   - pip install -r requirements.txt
   - pip install coveralls codecov
-  - psql -c 'CREATE DATABASE kawalya;' -U kawalya
-  -  psql -c 'CREATE DATABASE question_test;' -U kawalya
+  - psql -c 'CREATE DATABASE kawalya;' -U postgres
+  -  psql -c 'CREATE DATABASE question_test;' -U postgres
 
-  # - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres ;" -U kawalya#
+  - psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to postgres ;" -U postgres#
 
 script:
   - nosetests --with-coverage --cover-package=app app/tests
