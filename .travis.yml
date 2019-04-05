@@ -2,10 +2,6 @@ language: python
 
 python:
   - "3.6"
-env:
-  export DATABASE_URL="dbname='kawalya' host='localhost' port=5432  user='kawalya' password=''"
-  export DATABASE_TEST_URL="dbname='question_test' host='localhost' port=5432  user='kawalya' password=''"
-  APP_SETTINGS="testing"
 
 services:
   - postgresql
