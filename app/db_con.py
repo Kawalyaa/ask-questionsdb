@@ -16,7 +16,7 @@ class DataBaseConnection:
 
     def init_db(self):
         try:
-            con = psycopg2.connect("dbname='kawalya' host='localhost' port=5432  user='postgres' password='kawalyaa'")
+            con = psycopg2.connect("dbname='kawalya' host='localhost' port=5432  user='kawalya' password='kawalyaa'")
             return con
         except ConnectionError:
             return ("no connection")
