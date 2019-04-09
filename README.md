@@ -95,15 +95,15 @@ $ nosetests app/tests
 
 ## API-ENDPOINTS
 
- Method | Endpoints | Functionality |
- ------ | --------- | -------------: |
- POST | api/v2/auth/signup | creat User account |
- POST | api/v2/auth/login | A user can login |
- POST | api/v2/auth/logout | A user can logout |
- |   Questions endpoints                      ||
- POST | api/v2/question | A user can post question |
- GET | api/v2/question | A user can view all the questions |
- GET | api/v2/question/<int:post_id> | A user can view a single question |
+ Method | Endpoints | Functionality
+ ------ | --------- | -------------
+ POST | api/v2/auth/signup | creat User account
+ POST | api/v2/auth/login | A user can login
+ POST | api/v2/auth/logout | A user can logout
+ |   Questions endpoints                      |
+ POST | api/v2/question | A user can post question
+ GET | api/v2/question | A user can view all the questions
+ GET | api/v2/question/<int:post_id> | A user can view a single question 
  PUT | api/v2/question/<int:post_id> | A user can edit a question
  DELETE | api/v2/question/<int:post_id> | A user can delete a question
 
