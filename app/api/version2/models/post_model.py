@@ -20,12 +20,12 @@ class PostModel(BaseModel):
         for key, value in the_input.items():
             if not value:
                 raise BadRequest("{} should not be empty".format(key))
-            if key == "title":
+            if key == "title" or key == "description":
                 if isinstance(value, int):
                     raise BadRequest("{} value should be a string".format(key))
-            if key == "description":
-                if isinstance(value, int):
-                    raise BadRequest("{} value should be a string".format(key))
+            # if key == "description":
+            #    if isinstance(value, int):
+            #        raise BadRequest("{} value should be a string".format(key))
 
     def save(self):
         """This method saves the post infomation"""

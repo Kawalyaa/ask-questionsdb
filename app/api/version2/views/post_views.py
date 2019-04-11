@@ -82,11 +82,11 @@ class SingleQuestionBlog(Resource):
         auth_t_oken = auth.split(" ")[1]
         response = PostModel().decode_token(auth_t_oken)
         if isinstance(response, int):
-            res = PostModel().get_one_post(post_id)
-            if res:
+            result = PostModel().get_one_post(post_id)
+            if result:
                 return make_response(jsonify({
                     "message": "ok",
-                    "post": res
+                    "post": result
                 }), 200)
             else:
                 return make_response(jsonify({"message": "Item not found in the database"}))

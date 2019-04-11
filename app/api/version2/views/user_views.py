@@ -18,16 +18,16 @@ def validate_user(user):
         if not value:
             raise BadRequest("{} is lacking. It is required field".format(key))
         # validate length
-        if key == "user_name":
+        if key == "user_name" or key == "password":
             if len(value) < 4:
                 raise BadRequest("The {} provided is too short, it should be 5 characters above".format(key))
             elif len(value) > 15:
                 raise BadRequest("The {} provided is too long, it should be less than 15 characters".format(key))
-        if key == "password":
-            if len(value) < 4:
-                raise BadRequest("The {} provided is too short, it should be 5 characters above".format(key))
-            elif len(value) > 18:
-                raise BadRequest("The {} provided is too long, it should be less than 18 characters".format(key))
+        # if key == "password":
+        #    if len(value) < 4:
+        #        raise BadRequest("The {} provided is too short, it should be 5 characters above".format(key))
+        #    elif len(value) > 18:
+        #        raise BadRequest("The {} provided is too long, it should be less than 18 characters".format(key))
 
         if key == "name":
             # make sure the value provided is a string
