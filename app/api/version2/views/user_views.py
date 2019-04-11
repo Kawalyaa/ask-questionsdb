@@ -57,7 +57,7 @@ class Auth(Resource):
             "password": password
         }
         validate_user(login)
-        res = UserModel().check_exists(login['user_name'])
+        res = UserModel().check_exists('users', 'user_name', login['user_name'])
         if res is False:
             return make_response(jsonify({
                 "message": "No user found"

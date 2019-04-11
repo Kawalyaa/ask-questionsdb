@@ -1,4 +1,3 @@
-# from app.db_con import DataBaseConnection as db_con
 from app.api.version2.models.basemodel import BaseModel
 
 
@@ -10,11 +9,11 @@ class UserModel(BaseModel):
         self.password = password
         self.user_name = user_name
 
-    def check_exists(self, username):
-        """Check if the records exist"""
-        query = "SELECT * FROM users WHERE user_name = '%s'" % (username)
-        data = self.fetch_single_data_row(query)
-        return data is not None
+    # def check_exists(self, username):
+    #    """Check if the records exist"""
+    #    query = "SELECT * FROM users WHERE user_name = '%s'" % (username)
+    #    data = self.fetch_single_data_row(query)
+    #    return data is not None
 
     def save_user(self):
         """This method saves the user infomation"""
@@ -27,10 +26,15 @@ class UserModel(BaseModel):
 
         query = """INSERT INTO users (name, user_name, email, password) VALUES \
         (%(name)s, %(user_name)s, %(email)s, %(password)s) RETURNING user_id"""
-        if self.check_exists(user['user_name']) is True:
+        if self.check_exists('users', 'user_name', user['user_name']) is True:
             return("User already exists")
-        id = self.save_and_return_id(query, user)
-        return int(id)
+        con = self.init_db()
+        cur = con.cursor()
+        cur.execute(query, user)
+        user_id = cur.fetchone()[0]
+        con.commit()
+        # id = self.save_and_return_id(query, user)
+        return int(user_id)
 
         # executing aquery and user into a table
         # user_id = cur.fetchone()[0]
@@ -41,11 +45,20 @@ class UserModel(BaseModel):
 
     def logout(self, token):
         """This method keeps used tokens in the blacklist table"""
+        con = self.init_db()
+        cur = con.cursor()
         query = "INSERT INTO blacklist (tokens) VALUES ('{}');".format(token)
-        self.save_incoming_data_or_updates(query)
+        cur.execute(query)
+        con.commit()
+        # self.save_incoming_data_or_updates(query)
 
     def get_user_by_username(self, user_name):
+        con = self.init_db()
+        cur = con.cursor()
         query = """SELECT user_id, password \
         FROM users WHERE user_name = '{}'""".format(user_name)
-        user_info = self.fetch_single_data_row(query)
+        cur.execute(query)
+        user_info = cur.fetchone()
+        con.commit()
+        # user_info = self.fetch_single_data_row(query)
         return user_info

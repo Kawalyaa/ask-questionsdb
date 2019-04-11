@@ -2,7 +2,6 @@ from app.db_con import DataBaseConnection as db_con
 from datetime import datetime, timedelta
 import jwt
 import os
-# fr# om flask import current_app, g
 KEY = os.getenv("SECRET")
 
 
@@ -28,18 +27,29 @@ class BaseModel(db_con):
             resp = token
         except Exception as e:
             resp = e
-
         return resp
 
-    def blacklisted(self, token):
+    def check_exists(self, table_name, field_name, value):
+        con = self.init_db()
+        cur = con.cursor()
+        query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, field_name, value)
+        cur.execute(query)
+        resp = cur.fetchone()
+        con.commit()
+        # resp = self.fetch_all_tables_rows(query)
+        return resp is not None
+
+    def blacklisted(self, blacklist, tokens, token):
         """This method gets access_tokens which have been blacklisted or used"""
         """Once acess_token have been generated they are kept in blacklist table"""
-
-        query = """SELECT * FROM blacklist WHERE tokens = '{}';""".format(token)
-        get_one = self.fetch_single_data_row(query)
-        if get_one:
-            return True
-        return False
+        if self.check_exists(blacklist, tokens, token) is True:
+            return ("Token blacklisted")
+        return ("new token")
+        # query = """SELECT * FROM blacklist WHERE tokens = '{}';""".format(token)
+        # get_one = self.fetch_single_data_row(query)
+        # if get_one:
+        #    return True
+        # return False
 
     @staticmethod
     def decode_token(auth_token):
@@ -57,14 +67,13 @@ class BaseModel(db_con):
         except jwt.InvalidTokenError:
             return "The token is invalid"
 
-    def check_exist(self, table_name, field_name, value):
-        query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, field_name, value)
-        resp = self.fetch_all_tables_rows(query)
-        return resp is not None
-
     def delete_tb_value(self, table_name, field_name, value):
-        if self.check_exist(table_name, field_name, value) is False:
+        if self.check_exists(table_name, field_name, value) is False:
             return "Item not found"
+        con = self.init_db()
+        cur = con.cursor()
         query = "DELETE FROM {} WHERE {}={};".format(table_name, field_name, value)
-        self.save_incoming_data_or_updates(query)
+        cur.execute(query)
+        con.commit()
+        # self.save_incoming_data_or_updates(query)
         return "Deleted"

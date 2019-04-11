@@ -88,6 +88,8 @@ class SingleQuestionBlog(Resource):
                     "message": "ok",
                     "post": res
                 }), 200)
+            else:
+                return make_response(jsonify({"message": "Item not found in the database"}))
         else:
             return make_response(jsonify({
                 "message": response
@@ -111,6 +113,8 @@ class SingleQuestionBlog(Resource):
                 return make_response(jsonify({
                     "message": "question with id {} is updated".format(post_id)
                 }), 200)
+            else:
+                return make_response(jsonify({"message": "Item  is not found in the database"}))
         else:
             return make_response(jsonify({
                 "message": response
@@ -131,6 +135,8 @@ class SingleQuestionBlog(Resource):
             if res == "Deleted":
                 message = "question with id {} is Deleted".format(post_id)
                 return make_response(jsonify({"message": message}), 200)
+            else:
+                return make_response(jsonify({"message": "Item is not found in the database"}))
         else:
             return make_response(jsonify({
                 "message": response

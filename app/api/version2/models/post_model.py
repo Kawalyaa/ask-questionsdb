@@ -11,10 +11,10 @@ class PostModel(BaseModel):
         self.created_by = created_by
         self.created_on = datetime.now()
 
-    def check_exists(self, table_name, item_name, value):
-        query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, item_name, value)
-        resp = self.fetch_single_data_row(query)
-        return resp is not None
+    # def check_exists(self, table_name, item_name, value):
+    #    query = "SELECT * FROM {} WHERE {}='{}'".format(table_name, item_name, value)
+    #    resp = self.fetch_single_data_row(query)
+    #    return resp is not None
 
     def validate(self, the_input):
         for key, value in the_input.items():
@@ -34,14 +34,25 @@ class PostModel(BaseModel):
             "description": self.description,
             "created_by": self.created_by
         }
+        if self.check_exists('posts', 'title', posts['title']) is True:
+            return ('question exists')
+        con = self.init_db()
+        cur = con.cursor()
         query = """INSERT INTO posts (title, description, created_by, created_on) VALUES \
          (%(title)s, %(description)s, %(created_by)s, ('now')) RETURNING post_id;"""
-        id = self.save_and_return_id(query, posts)
-        return id
+        cur.execute(query, posts)
+        post_id = cur.fetchone()[0]
+        con.commit()
+        # id = self.save_and_return_id(query, posts)
+        return int(post_id)
 
     def get_posts(self):
+        con = self.init_db()
+        cur = con.cursor()
         query = "SELECT * FROM posts;"
-        data = self.fetch_all_tables_rows(query)
+        cur.execute(query)
+        data = cur.fetchall()
+        # data = self.fetch_all_tables_rows(query)
         res = []
 
         for i, items in enumerate(data):
@@ -60,8 +71,12 @@ class PostModel(BaseModel):
 
         if self.check_exists('posts', 'post_id', post_id) is False:
             return ('Not found'), 404
+        con = self.init_db()
+        cur = con.cursor()
         query = "SELECT title, description, created_by, created_on FROM posts WHERE post_id={};".format(post_id)
-        data = self.get_all_tb_rows_by_id(query)
+        cur.execute(query)
+        data = cur.fetchone()
+        # data = self.get_all_tb_rows_by_id(query)
         res = []
 
         posts = dict(
@@ -76,8 +91,11 @@ class PostModel(BaseModel):
     def update_question(self, title, description, post_id):
         if self.check_exists('posts', 'post_id', post_id) is False:
             return ("Not found"), 404
-
+        con = self.init_db()
+        cur = con.cursor()
         query = "UPDATE posts SET title = '{}', description = '{}'\
         WHERE post_id = '{}';".format(title, description, post_id)
-        self.save_incoming_data_or_updates(query)
+        cur.execute(query)
+        con.commit()
+        # self.save_incoming_data_or_updates(query)
         return "Updated"
