@@ -56,7 +56,7 @@ class QuestionBlogs(Resource):
             if res:
                 return make_response(jsonify({
                     "message": "ok",
-                    "post": res
+                    "posts": res
                 }), 200)
 
             else:
